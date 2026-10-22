@@ -1,0 +1,23 @@
+[package]
+name = "hand-mouse"
+version = "0.1.0"
+edition = "2021"
+description = "Native webcam hand tracking and gesture mouse for Windows"
+license = "MIT"
+readme = "README.md"
+
+[dependencies]
+ort = { version = "=2.0.0-rc.9", features = ["ndarray", "cuda"] }
+ort-sys = "=2.0.0-rc.9"
+nokhwa = { version = "0.10", features = ["input-native"] }
+fast_image_resize = "4.0"
+crossbeam-channel = "0.5"
+glam = "0.29"
+anyhow = "1"
+minifb = "0.28"
+windows-sys = { version = "0.59", features = ["Win32_UI_Input_KeyboardAndMouse", "Win32_UI_WindowsAndMessaging", "Win32_Foundation"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "abort"

@@ -1,0 +1,14 @@
+The model files models/palm_detection.onnx and models/hand_landmark.onnx were
+downloaded from the weights release of:
+https://github.com/yakhyo/mediapipe-hand-landmark-onnx
+
+Copyright 2026 Yakhyokhuja Valikhujaev.
+Licensed under the Apache License, Version 2.0.
+https://www.apache.org/licenses/LICENSE-2.0
+
+The upstream project attributes the model topology to Google MediaPipe and
+the original ONNX weight conversions to PINTO0309, both Apache-2.0.
+
+SHA-256 (downloaded files):
+palm_detection.onnx  42CBAC27CD02625C823A3CEFE833F60F945F89163EC2BF681F598C6EA26FFE41
+hand_landmark.onnx  0965B9C5BABDDDD961D406AA7AF4868321E9EA0E1C30F1832D5F3BE21F79023C

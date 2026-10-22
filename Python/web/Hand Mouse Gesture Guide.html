@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Hand Mouse Gesture Guide</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a printed calibration card. Left, an index of gesture frames; right, a mirrored camera preview with a tracking overlay beside an "on screen" result panel. Two spot inks carry meaning: green = pointer hand, amber = other hand. */
+:root{
+  --paper:#e8ece9; --panel:#f4f6f4; --ink:#14191b; --ink-2:#47535a; --line:#c2cbc7;
+  --g:#0a7f55; --g-soft:#cdebdd; --a:#9a4f00; --a-soft:#f7dfc0; --focus:#2457d6;
+  --ov-g:#3ee59a; --ov-a:#ffb445;
+  --cam-a:#55646b; --cam-b:#8d9b9f;
+  --scr-1:#cfd9dd; --scr-2:#aebdc3; --scr-win:#f7f9f8; --scr-bar:#dde4e1; --scr-edge:#8b999a; --scr-ink:#2a3437; --scr-line:#c6d0cd; --scr-off:#8d9a9d;
+  --skin:#dba37d; --skin-hi:#f1c7a6; --skin-lo:#b9784f; --skin-edge:#7a4b30; --nail:#ecc2a8;
+  --font-display:'Anybody','Arial Narrow',system-ui,sans-serif;
+  --font-body:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'Martian Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101517; --panel:#192024; --ink:#e9efec; --ink-2:#a6b4b6; --line:#2f3c41;
+  --g:#53d9a1; --g-soft:#17382c; --a:#ffb760; --a-soft:#3d2c16; --focus:#8fb0ff;
+  --cam-a:#33414a; --cam-b:#62727a;
+  --scr-1:#33424a; --scr-2:#25323a; --scr-win:#1d272c; --scr-bar:#2b383e; --scr-edge:#5a6b70; --scr-ink:#d5dedc; --scr-line:#3b4a50; --scr-off:#66767a;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#101517; --panel:#192024; --ink:#e9efec; --ink-2:#a6b4b6; --line:#2f3c41;
+  --g:#53d9a1; --g-soft:#17382c; --a:#ffb760; --a-soft:#3d2c16; --focus:#8fb0ff;
+  --cam-a:#33414a; --cam-b:#62727a;
+  --scr-1:#33424a; --scr-2:#25323a; --scr-win:#1d272c; --scr-bar:#2b383e; --scr-edge:#5a6b70; --scr-ink:#d5dedc; --scr-line:#3b4a50; --scr-off:#66767a;
+  color-scheme:dark}
+:root[data-skin="1"]{--skin:#efc7a8;--skin-hi:#fbe1cc;--skin-lo:#d09a78;--skin-edge:#8f5f45;--nail:#f6d6c4}
+:root[data-skin="3"]{--skin:#b87d58;--skin-hi:#d9a07c;--skin-lo:#8f5a3a;--skin-edge:#5a3622;--nail:#d6a487}
+:root[data-skin="4"]{--skin:#8a5a3e;--skin-hi:#aa7857;--skin-lo:#6a4029;--skin-edge:#3f2416;--nail:#a97d63}
+:root[data-skin="5"]{--skin:#5f3d2b;--skin-hi:#80553d;--skin-lo:#432a1d;--skin-edge:#24140c;--nail:#7d5844}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 56px}
+.wrap{max-width:1280px;margin:0 auto}
+h1,h2,h3,p{margin-top:0} h1,h2,h3{text-wrap:balance}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+a{color:var(--g);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mono{font-family:var(--font-mono)}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;padding-block:16px;border-bottom:1.5px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;font-family:var(--font-display);font-weight:800;font-stretch:125%;font-size:20px;letter-spacing:-.01em}
+.tools{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.skins{display:flex;align-items:center;gap:8px;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.skins button{width:24px;height:24px;border-radius:50%;border:2px solid var(--paper);box-shadow:0 0 0 1.5px var(--ink);padding:0}
+.skins button[aria-pressed="true"]{box-shadow:0 0 0 1.5px var(--ink),0 0 0 4.5px var(--paper),0 0 0 6px var(--ink)}
+.tbtn{min-height:38px;padding:6px 14px;border:1.5px solid var(--ink);border-radius:4px;background:transparent;font-weight:600;font-size:14px}
+.tbtn:hover{background:var(--ink);color:var(--paper)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:24px 56px;align-items:end;padding-block:40px 30px}
+.hero h1{margin:0 0 14px;font-family:var(--font-display);font-weight:850;font-stretch:132%;font-size:clamp(38px,6.6vw,88px);line-height:.95;letter-spacing:-.03em}
+.hero p{max-width:56ch;margin:0;color:var(--ink-2);font-size:17px}
+.legend{display:grid;gap:10px;font-size:14px;color:var(--ink-2);border-left:1.5px solid var(--ink);padding-left:16px}
+.legend div{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;align-items:start}
+.legend b{color:var(--ink)}
+.dot-g,.dot-a,.dot-b{display:block;width:14px;height:14px;margin-top:4px}
+.dot-g{border-radius:50%;background:var(--g)}
+.dot-a{background:var(--a);transform:rotate(45deg) scale(.85)}
+.dot-b{border-radius:50%;background:linear-gradient(90deg,var(--g) 50%,var(--a) 50%)}
+
+/* explorer */
+.explorer{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:28px;align-items:start;padding-bottom:40px}
+.index{position:sticky;top:12px;min-width:0}
+.filters{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--ink);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.filters button{border:0;border-right:1.5px solid var(--ink);background:transparent;padding:8px 4px;font:600 12px var(--font-mono);letter-spacing:.03em;min-height:40px}
+.filters button:last-child{border-right:0}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.search{width:100%;height:44px;padding:8px 12px;border:1.5px solid var(--ink);border-radius:4px;background:var(--panel);margin-bottom:14px}
+.search::placeholder{color:var(--ink-2);opacity:1}
+.count{margin:0 0 6px;font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.grp{margin:16px 0 6px;display:flex;align-items:center;gap:9px;font:700 11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.grp i{display:block;width:11px;height:11px}
+.grp.green i{border-radius:50%;background:var(--g)} .grp.other i{background:var(--a);transform:rotate(45deg) scale(.85)} .grp.both i{border-radius:50%;background:linear-gradient(90deg,var(--g) 50%,var(--a) 50%)}
+.item{width:100%;display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;align-items:center;text-align:left;padding:6px;margin-bottom:4px;border:1.5px solid transparent;border-radius:5px;background:transparent}
+.item:hover{background:var(--panel);border-color:var(--line)}
+.item[aria-current="true"]{background:var(--panel);border-color:var(--ink)}
+.item svg{display:block;width:92px;height:auto;border-radius:3px}
+.item strong{display:block;font-weight:700;font-size:15px;line-height:1.25}
+.item small{display:block;margin-top:3px;font:400 11px var(--font-mono);color:var(--ink-2)}
+.empty{padding:18px 4px;color:var(--ink-2)} .empty button{margin-top:8px}
+
+/* stage */
+.stage-row{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--panel);min-width:0}
+.card-head{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1.5px solid var(--ink);font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase}
+.card-head span:last-child{color:var(--ink-2)}
+.card svg{display:block;width:100%;height:auto}
+.vf-t{font:600 11px var(--font-mono);fill:#fff;letter-spacing:.06em;paint-order:stroke;stroke:rgba(0,0,0,.5);stroke-width:3px;stroke-linejoin:round}
+.ctl{display:flex;align-items:center;gap:12px;padding:9px 12px;border-top:1.5px solid var(--ink);flex-wrap:wrap}
+.ctl .play{width:38px;height:38px;border:1.5px solid var(--ink);border-radius:50%;background:transparent;display:grid;place-items:center;padding:0;flex:none}
+.ctl .play:hover{background:var(--ink);color:var(--paper)}
+.ctl .play svg{width:14px;height:14px;fill:currentColor}
+.ctl input[type=range]{flex:1 1 120px;min-width:0;accent-color:var(--g);height:28px}
+.ctl label{display:flex;align-items:center;gap:7px;font:600 12px var(--font-mono);white-space:nowrap}
+.ctl label input{width:17px;height:17px;accent-color:var(--g)}
+.side{display:grid;gap:16px;min-width:0}
+.scr-note{margin:0;padding:10px 12px;border-top:1.5px solid var(--ink);font-size:14px;color:var(--ink-2)}
+.scr text{font-family:var(--font-body)}
+
+/* overlay (skeleton) */
+.ov line{stroke:var(--c);stroke-width:2;stroke-linecap:round;opacity:.85}
+.ov .d{fill:#fff;stroke:var(--c);stroke-width:1.6}
+.ov .k{fill:var(--c);stroke:#fff;stroke-width:2.2}
+.ov .p{fill:none;stroke:var(--c);stroke-width:2.5}
+.ov text{font:700 12px var(--font-mono);fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.65);stroke-width:3px;stroke-linejoin:round}
+.tag rect{fill:rgba(10,14,16,.72)} .tag text{font:700 10px var(--font-mono);letter-spacing:.08em;fill:#fff}
+
+/* detail text */
+.detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 40px;padding-top:26px}
+.detail h2{margin:0 0 10px;font-family:var(--font-display);font-weight:800;font-stretch:120%;font-size:clamp(28px,3.6vw,46px);line-height:1;letter-spacing:-.02em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:4px 9px;border:1.5px solid var(--ink);border-radius:3px;font:600 12px var(--font-mono)}
+.chip.g{background:var(--g-soft);color:var(--g);border-color:var(--g)} .chip.a{background:var(--a-soft);color:var(--a);border-color:var(--a)} .chip.b{background:var(--panel)}
+.summary{color:var(--ink-2);font-size:17px;max-width:48ch;margin-bottom:0}
+.steps{margin:0 0 18px;padding:0;list-style:none;display:grid;gap:12px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:24px;height:24px;border:1.5px solid var(--ink);border-radius:50%;font:700 11px var(--font-mono);margin-top:2px}
+.note{margin:0;padding:12px 14px;border:1.5px dashed var(--ink-2);border-radius:4px;font-size:14px;color:var(--ink-2)}
+
+/* reference */
+.sect{padding-block:34px;border-top:1.5px solid var(--ink)}
+.sect h2{margin:0 0 6px;font-family:var(--font-display);font-weight:800;font-stretch:120%;font-size:clamp(26px,3vw,38px);letter-spacing:-.02em}
+.sect>p{color:var(--ink-2);max-width:60ch}
+.ref{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:28px 44px;align-items:start;margin-top:20px}
+.refhand{border:1.5px solid var(--ink);border-radius:6px;background:var(--panel)}
+.refhand svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;border:1.5px solid var(--ink);border-radius:6px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border-bottom:1.5px solid var(--ink)}
+tr:last-child td{border-bottom:0}
+td.code{font:700 13px var(--font-mono);white-space:nowrap}
+.keys{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.key{padding:16px;border:1.5px solid var(--ink);border-radius:6px;background:var(--panel)}
+kbd{display:inline-block;min-width:34px;padding:3px 8px;border:1.5px solid var(--ink);border-bottom-width:4px;border-radius:5px;background:var(--paper);font:700 13px var(--font-mono);text-align:center}
+.key p{margin:12px 0 0;font-size:14px;color:var(--ink-2)}
+.onehand{margin-top:14px;padding:14px 16px;border-left:4px solid var(--g);background:var(--panel);font-size:14px;color:var(--ink-2)} .onehand b{color:var(--ink)}
+footer{padding-top:22px;border-top:1.5px solid var(--ink);font-size:13px;color:var(--ink-2)}
+#print-guide{display:none}
+
+@media (max-width:1180px){.stage-row{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1000px){
+  .explorer{grid-template-columns:minmax(0,1fr)} .index{position:static}
+  .list{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px} .list .grp{display:none}
+  .item{flex:none;width:230px;border-color:var(--line)}
+  .hero{grid-template-columns:minmax(0,1fr)} .detail{grid-template-columns:minmax(0,1fr)}
+  .ref{grid-template-columns:minmax(0,1fr)} .keys{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:500px){.skins span{display:none} .keys{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  :root,:root[data-theme="dark"]{--paper:#fff;--panel:#fff;--ink:#111;--ink-2:#444;--line:#ccc;--g:#0a7f55;--a:#9a4f00;color-scheme:light}
+  .tools,.explorer,.ref,.hero .legend{display:none!important} #print-guide{display:block}
+  .pg{break-inside:avoid;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)} .pg h3{margin:0 0 4px}
+}
+
+/* layout v2: do this -> get this */
+.hero{padding-block:26px 18px;align-items:center}
+.hero h1{font-size:clamp(34px,5vw,64px)}
+.explorer{grid-template-columns:minmax(0,290px) minmax(0,1fr);gap:32px}
+.item{border-left:5px solid var(--line)}
+.item.r-green{border-left-color:var(--g)}.item.r-other{border-left-color:var(--a)}.item.r-both{border-left-color:var(--ink)}
+.dhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;margin-bottom:16px}
+.dhead h2{margin:0 0 8px;font-family:var(--font-display);font-weight:800;font-stretch:120%;font-size:clamp(30px,4vw,54px);line-height:1;letter-spacing:-.02em}
+.dhead .summary{margin:0;max-width:52ch}
+.dhead .chips{margin-bottom:12px}
+.dnav{display:flex;align-items:center;gap:8px}
+.dnav .count{margin:0 6px 0 0}
+.stage-row{grid-template-columns:minmax(0,1.5fr) 44px minmax(0,1fr);align-items:center;gap:8px}
+.bridge{display:grid;place-items:center}
+.bridge svg{width:40px;height:40px;fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.detail{display:block;padding-top:24px}
+.dh3{margin:0 0 12px;font-family:var(--font-display);font-weight:800;font-stretch:115%;font-size:22px;letter-spacing:-.01em}
+.steps{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.steps li{grid-template-columns:1fr;gap:10px;padding:16px;border:1.5px solid var(--ink);border-radius:6px;background:var(--panel)}
+.steps li::before{margin-top:0}
+.note{margin-top:14px}
+@media (max-width:1180px){.stage-row{grid-template-columns:minmax(0,1fr)}.bridge svg{transform:rotate(90deg)}}
+@media (max-width:1000px){.explorer{grid-template-columns:minmax(0,1fr)}}
+/* sentence-case labels */
+.skins,.count,.grp,.card-head,th,.filters button,.chip,.ctl label{text-transform:none;letter-spacing:0;font-family:var(--font-body)}
+.skins,.count,.card-head,th,.chip,.ctl label,.grp,.filters button{font-size:13px}
+.item small{font:400 12.5px var(--font-body)}
+.vf-t{font:600 12px var(--font-body);letter-spacing:0}
+.tag text{font:700 11px var(--font-body);letter-spacing:0}
+.ov text{font:700 12px var(--font-body)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs>
+<filter id="handEdge" filterUnits="userSpaceOnUse" x="-150" y="-150" width="600" height="750" color-interpolation-filters="sRGB">
+  <feMorphology in="SourceAlpha" operator="dilate" radius="1.6" result="d"/>
+  <feFlood style="flood-color:var(--skin-edge)" result="fl"/>
+  <feComposite in="fl" in2="d" operator="in" result="edge"/>
+  <feMerge><feMergeNode in="edge"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<radialGradient id="palmG" cx=".5" cy=".42" r=".7">
+  <stop offset="0" style="stop-color:var(--skin)"/><stop offset=".65" style="stop-color:var(--skin)"/><stop offset="1" style="stop-color:var(--skin-lo)"/>
+</radialGradient>
+<linearGradient id="camBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--cam-a)"/><stop offset="1" style="stop-color:var(--cam-b)"/></linearGradient>
+<radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>
+<linearGradient id="scrBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--scr-1)"/><stop offset="1" style="stop-color:var(--scr-2)"/></linearGradient>
+</defs></svg>
+
+<div class="wrap">
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Hand Mouse gesture guide">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="12" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 1v6M15 23v6M1 15h6M23 15h6" stroke="currentColor" stroke-width="1.8"/><path d="M15 9.5a5.5 5.5 0 0 0 0 11z" fill="var(--g)"/><path d="M15 9.5a5.5 5.5 0 0 1 0 11z" fill="var(--a)"/></svg>
+    Hand Mouse
+  </a>
+  <div class="tools">
+    <div class="skins" role="group" aria-label="Hand skin tone"><span>Skin</span>
+      <button type="button" data-skin="1" aria-label="Skin tone 1" aria-pressed="false" style="background:#efc7a8"></button>
+      <button type="button" data-skin="2" aria-label="Skin tone 2" aria-pressed="true" style="background:#dba37d"></button>
+      <button type="button" data-skin="3" aria-label="Skin tone 3" aria-pressed="false" style="background:#b87d58"></button>
+      <button type="button" data-skin="4" aria-label="Skin tone 4" aria-pressed="false" style="background:#8a5a3e"></button>
+      <button type="button" data-skin="5" aria-label="Skin tone 5" aria-pressed="false" style="background:#5f3d2b"></button>
+    </div>
+    <button type="button" class="tbtn" id="theme-btn">Dark mode</button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div>
+    <h1>Ten gestures, two hands.</h1>
+    <p>Pick a gesture to watch it the way your camera sees it, with the tracking points drawn on top and the result shown on a small screen beside it.</p>
+  </div>
+  <div class="legend" aria-label="How to read the previews">
+    <div><span class="dot-g"></span><span><b>Pointer hand</b> (green). The right hand by default. It moves the cursor.</span></div>
+    <div><span class="dot-a"></span><span><b>Other hand</b> (amber). Clicks, scrolling and shortcuts.</span></div>
+    <div><span class="dot-b"></span><span><b>Mirrored view.</b> Palm toward the camera, like your own preview window.</span></div>
+  </div>
+</section>
+
+<main id="main">
+<div class="explorer">
+  <aside class="index" aria-label="Gesture index">
+    <div class="filters" role="group" aria-label="Filter by hand">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="green" aria-pressed="false">Pointer</button>
+      <button type="button" data-filter="other" aria-pressed="false">Other</button>
+      <button type="button" data-filter="both" aria-pressed="false">Both</button>
+    </div>
+    <label class="sr-only" for="search">Search gestures</label>
+    <input class="search" id="search" type="search" autocomplete="off" placeholder="Search a gesture or finger">
+    <p class="count" id="count" role="status" aria-live="polite">10 gestures</p>
+    <div class="list" id="list"></div>
+  </aside>
+
+  <section aria-label="Gesture viewer" id="viewer">
+    <div id="dhead" class="dhead" aria-live="polite"></div>
+    <div class="stage-row">
+      <div class="card">
+        <div class="card-head"><span>What you do</span><span>Camera view, mirrored</span></div>
+        <svg id="vf" viewBox="0 0 640 420" role="img" aria-label="Gesture preview">
+          <rect width="640" height="420" fill="url(#camBg)"/>
+          <g stroke="#fff" stroke-opacity=".12"><path d="M213 0V420M427 0V420M0 140H640M0 280H640"/></g>
+          <rect width="640" height="420" fill="url(#vig)"/>
+          <g id="vf-dyn"></g>
+          <g fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2.5"><path d="M14 40V14h26M600 14h26v26M14 380v26h26M626 380v26h-26"/></g>
+          <text class="vf-t" x="52" y="28">Mirrored view, palm toward camera</text>
+        </svg>
+        <div class="ctl">
+          <button type="button" class="play" id="play" aria-label="Pause animation"></button>
+          <label class="sr-only" for="scrub">Scrub through the gesture</label>
+          <input type="range" id="scrub" min="0" max="1000" value="0">
+          <label><input type="checkbox" id="ov" checked> Tracking points</label>
+        </div>
+      </div>
+      <div class="bridge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 20h27M22 9l11 11-11 11"/></svg></div>
+      <div class="side">
+        <div class="card">
+          <div class="card-head"><span>What happens</span><span id="scr-state">Result</span></div>
+          <svg class="scr" id="scr" viewBox="0 0 320 200" role="img" aria-label="What happens on screen"><g id="scr-dyn"></g></svg>
+          <p class="scr-note" id="scr-note"></p>
+        </div>
+      </div>
+    </div>
+    <article class="detail" id="detail" aria-live="polite"></article>
+  </section>
+</div>
+</main>
+
+<section class="sect" id="reference">
+  <h2>Which finger is which</h2>
+  <p>The tracker numbers 21 points on each hand. Every gesture below is a fingertip touching another fingertip, so you only need five of them.</p>
+  <div class="ref">
+    <div class="refhand"><svg id="refsvg" viewBox="10 -10 280 400" role="img" aria-label="Hand with the 21 tracking points numbered"></svg></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Points</th><th>Fingers</th><th>Pointer hand</th><th>Other hand</th></tr></thead>
+        <tbody>
+          <tr><td class="code">8</td><td>Index tip</td><td>Moves the pointer</td><td>&mdash;</td></tr>
+          <tr><td class="code">4 + 20</td><td>Thumb, pinky</td><td>Controls on / off</td><td>Right click</td></tr>
+          <tr><td class="code">4 + 8</td><td>Thumb, index</td><td>&mdash;</td><td>Left click, drag, choose a window</td></tr>
+          <tr><td class="code">4 + 12</td><td>Thumb, middle</td><td>Windows key / Start</td><td>Double click</td></tr>
+          <tr><td class="code">4 + 16</td><td>Thumb, ring</td><td>&mdash;</td><td>Window picker</td></tr>
+          <tr><td class="code">8 + 12</td><td>Index, middle (V)</td><td>&mdash;</td><td>Scroll</td></tr>
+          <tr><td class="code">8+8 · 4+4</td><td>Both hands</td><td colspan="2">Index tips meet, thumbs spread: open Chrome</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sect" id="keyboard">
+  <h2>App keys and safety</h2>
+  <div class="keys">
+    <div class="key"><kbd>H</kbd><p>Switch the preferred green pointer hand.</p></div>
+    <div class="key"><kbd>Space</kbd><p>Pause or resume. Releases any drag.</p></div>
+    <div class="key"><kbd>Q</kbd> <kbd>Esc</kbd><p>Quit from the camera preview.</p></div>
+    <div class="key"><kbd>&#8598;</kbd><p>Move the physical mouse into a screen corner for the fail-safe stop.</p></div>
+  </div>
+  <div class="onehand"><b>Using one hand?</b> It can move, left click, drag, open Start, open the window picker, and toggle controls. Double click, right click, and scrolling need both hands. If the preferred hand leaves the frame, the visible hand becomes the pointer. The preview's center box maps to the primary display.</div>
+</section>
+
+<div id="print-guide" aria-hidden="true"></div>
+<footer>Hand Mouse gesture guide. This page does not use your camera.</footer>
+</div>
+<noscript><p style="padding:16px">Turn on JavaScript to explore the gestures, or read the controls in README.md.</p></noscript>
+
+<script>
+/* ---------- math ---------- */
+const DEG=Math.PI/180, TAU=Math.PI*2;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ss=(a,b,x)=>{x=clamp((x-a)/(b-a));return x*x*(3-2*x)};
+const lerp=(a,b,t)=>a+(b-a)*t;
+const lerpA=(A,B,t)=>A.map((v,i)=>lerp(v,B[i],t));
+const f1=n=>Math.round(n*10)/10;
+const pinchT=u=>ss(.12,.3,u)-ss(.66,.82,u);
+
+/* ---------- hand model (MediaPipe 21 landmarks, palm toward camera, thumb on the left) ---------- */
+const FN=['index','middle','ring','pinky'];
+const TIPID={index:8,middle:12,ring:16,pinky:20};
+const BASE={
+  wrist:[150,338], cmc:[124,314],
+  mcp:{index:[116,206],middle:[146,196],ring:[174,204],pinky:[199,222]},
+  len:{index:[52,32,26],middle:[58,36,27],ring:[53,33,26],pinky:[42,25,22]},
+  wid:{index:[26,23,21,18],middle:[27,24,21,18],ring:[25,22,20,17],pinky:[21,19,17,15]},
+  tlen:[52,42,34], twid:[30,27,24,21]
+};
+const FAN={index:-5,middle:0,ring:5,pinky:12};
+const EXTF={index:[4,6,4],middle:[4,6,4],ring:[8,10,6],pinky:[10,12,8]};
+const EXTA={index:-4,middle:1,ring:6,pinky:12};
+const CURLF=[85,95,55];
+const PINCHF={index:[48,62,32],middle:[48,62,32],ring:[55,65,35],pinky:[60,70,40]};
+const T_OUT=[-52,-44,-34], T_REST=[-30,-20,-10], T_TUCK={angles:[16,36,56],k:[1,.85,.7]};
+
+const ext=n=>({abd:EXTA[n],f:EXTF[n]});
+const curl=()=>({abd:0,f:CURLF});
+function pointPose(){return{fingers:{index:{abd:-3,f:[2,3,2]},middle:curl(),ring:curl(),pinky:curl()},thumb:T_TUCK}}
+function vPose(){return{fingers:{index:{abd:-12,f:[2,3,2]},middle:{abd:9,f:[2,3,2]},ring:curl(),pinky:curl()},thumb:T_TUCK}}
+function openPose(){return{fingers:{index:ext('index'),middle:ext('middle'),ring:ext('ring'),pinky:ext('pinky')},thumb:{angles:T_OUT}}}
+function chromePose(){return{fingers:{index:{abd:0,f:[2,3,2]},middle:curl(),ring:curl(),pinky:curl()},thumb:{angles:T_REST}}}
+function pinchPose(n,t){
+  const fingers={index:ext('index'),middle:ext('middle'),ring:ext('ring'),pinky:ext('pinky')};
+  fingers[n]={abd:EXTA[n]*(1-t),f:lerpA(EXTF[n],PINCHF[n],t)};
+  return{fingers,thumb:{touch:n,t,angles:T_OUT}};
+}
+
+function fingerPts(n,p){
+  const m=BASE.mcp[n],L=BASE.len[n],a=(FAN[n]+(p.abd||0))*DEG,d=[Math.sin(a),-Math.cos(a)];
+  const pts=[m.slice()],cs=[];let c=0,cur=m;
+  for(let i=0;i<3;i++){c+=p.f[i];cs.push(c);const l=L[i]*Math.cos(c*DEG);cur=[cur[0]+d[0]*l,cur[1]+d[1]*l];pts.push(cur)}
+  return{pts,cs,dir:d};
+}
+function thumbFK(angles,k){
+  let cur=BASE.cmc.slice();const pts=[cur];
+  for(let i=0;i<3;i++){const a=angles[i]*DEG,l=BASE.tlen[i]*(k?k[i]:1);cur=[cur[0]+Math.sin(a)*l,cur[1]-Math.cos(a)*l];pts.push(cur)}
+  return pts;
+}
+function fabrik(init,lens,target){
+  const p=init.map(q=>q.slice()),root=p[0].slice(),total=lens[0]+lens[1]+lens[2];
+  const d0=Math.hypot(target[0]-root[0],target[1]-root[1])||1;
+  if(d0>=total){const dir=[(target[0]-root[0])/d0,(target[1]-root[1])/d0];let c=root.slice();for(let i=0;i<3;i++){c=[c[0]+dir[0]*lens[i],c[1]+dir[1]*lens[i]];p[i+1]=c}return p}
+  for(let it=0;it<14;it++){
+    p[3]=target.slice();
+    for(let i=2;i>=0;i--){const dx=p[i][0]-p[i+1][0],dy=p[i][1]-p[i+1][1],d=Math.hypot(dx,dy)||1;p[i]=[p[i+1][0]+dx/d*lens[i],p[i+1][1]+dy/d*lens[i]]}
+    p[0]=root.slice();
+    for(let i=0;i<3;i++){const dx=p[i+1][0]-p[i][0],dy=p[i+1][1]-p[i][1],d=Math.hypot(dx,dy)||1;p[i+1]=[p[i][0]+dx/d*lens[i],p[i][1]+dy/d*lens[i]]}
+  }
+  return p;
+}
+function evalPose(pose){
+  const F={};FN.forEach(n=>F[n]=fingerPts(n,pose.fingers[n]));
+  let tp;
+  if(pose.thumb.touch){
+    const open=thumbFK(pose.thumb.angles),tip=F[pose.thumb.touch].pts[3],t=ss(0,1,pose.thumb.t);
+    tp=fabrik(open,BASE.tlen,[lerp(open[3][0],tip[0],t),lerp(open[3][1],tip[1],t)]);
+  }else tp=thumbFK(pose.thumb.angles,pose.thumb.k);
+  return{F,tp};
+}
+function smoothPath(pts,P){
+  let d='M'+P(pts[0]);
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;
+    d+='C'+P([p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6])+' '+P([p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6])+' '+P(p2);
+  }
+  return d+'Z';
+}
+const THENAR=[[110,326],[103,300],[112,274],[134,280],[152,302],[148,332],[128,346]],HYPO=[[200,300],[207,272],[196,262],[184,290],[180,330],[194,336]];
+const PALM=[[128,404],[127,352],[110,326],[99,292],[98,254],[103,222],[118,207],[146,201],[174,206],[200,224],[212,248],[209,290],[196,326],[176,352],[174,404]];
+
+/* hand(role,pose,opts) -> {skin, lm (view coords), ...} */
+function hand(role,pose,o){
+  const h=Object.assign({role,flip:role==='other',cx:320,cy:412,s:1,rot:0,hl:[],t:0},o||{});
+  const ev=evalPose(pose),flip=h.flip;
+  const FX=p=>flip?[300-p[0],p[1]]:p;
+  const P=p=>{const q=FX(p);return f1(q[0])+' '+f1(q[1])};
+  const line=(a,b,w,st,op)=>`<path d="M${P(a)}L${P(b)}" stroke="${st}" stroke-width="${f1(w)}"${op?` opacity="${op}"`:''}/>`;
+  const full=(a,b,w)=>line(a,b,w+3,'var(--skin-lo)')+line(a,b,w,'var(--skin)')+line(a,b,w*.36,'var(--skin-hi)',.55);
+  const wavg=(arr,i)=>(arr[i]+arr[i+1])/2;
+  let back='',front='';
+  FN.forEach(n=>{
+    const F=ev.F[n],pts=F.pts,W=BASE.wid[n];
+    if(F.cs[1]>70){
+      for(let i=0;i<3;i++)front+=full(pts[i],pts[i+1],wavg(W,i));
+      {const q3=FX(pts[3]);front+=`<circle cx="${f1(q3[0])}" cy="${f1(q3[1])}" r="${f1(W[3]*.36)}" fill="var(--skin-hi)" opacity=".45"/>`}
+    }else{
+      let fl='',hl='',cr='';
+      for(let i=0;i<3;i++){
+        const w=wavg(W,i),a=pts[i],b=pts[i+1];
+        fl+=line(a,b,w,'var(--skin)');hl+=line(a,b,w*.36,'var(--skin-hi)',.5);
+        if(i>0){const dx=b[0]-a[0],dy=b[1]-a[1],m=Math.hypot(dx,dy)||1,px=-dy/m*w*.32,py=dx/m*w*.32;
+          cr+=`<path d="M${P([a[0]-px,a[1]-py])}L${P([a[0]+px,a[1]+py])}" stroke="var(--skin-lo)" stroke-width="1.3" opacity=".5"/>`}
+      }
+      {const q3=FX(pts[3]);cr+=`<circle cx="${f1(q3[0])}" cy="${f1(q3[1])}" r="${f1(W[3]*.32)}" fill="var(--skin-hi)" opacity=".35"/>`}back+=fl+hl+cr;
+    }
+  });
+  const palm=`<path d="${smoothPath(PALM,P)}" fill="url(#palmG)" stroke="none"/>`+`<path d="${smoothPath(THENAR,P)}" fill="var(--skin-lo)" opacity=".16" stroke="none"/><path d="${smoothPath(HYPO,P)}" fill="var(--skin-lo)" opacity=".12" stroke="none"/>`+FN.map(n=>{const q=FX(BASE.mcp[n]);return `<circle cx="${f1(q[0])}" cy="${f1(q[1]+8)}" r="9" fill="var(--skin-hi)" opacity=".28" stroke="none"/>`}).join('')+
+    `<g stroke="var(--skin-lo)" stroke-width="1.6" opacity=".32"><path d="M${P([196,244])}C${P([176,236])} ${P([146,236])} ${P([118,246])}"/><path d="M${P([108,264])}C${P([138,262])} ${P([168,272])} ${P([198,292])}"/><path d="M${P([114,242])}C${P([98,272])} ${P([104,306])} ${P([128,332])}"/></g>`;
+  const tp=ev.tp;let th='';
+  th+=line(tp[0],tp[1],(BASE.twid[0]+BASE.twid[1])/2,'var(--skin)')+line(tp[0],tp[1],11,'var(--skin-hi)',.4);
+  th+=full(tp[1],tp[2],(BASE.twid[1]+BASE.twid[2])/2)+full(tp[2],tp[3],(BASE.twid[2]+BASE.twid[3])/2);
+  const sh='filter:drop-shadow(0 2.5px 2.5px rgba(25,12,5,.28))';
+  const skin=`<g transform="translate(${f1(h.cx)} ${f1(h.cy)}) rotate(${f1(h.rot)}) scale(${h.s}) translate(-150 -338)"><g filter="url(#handEdge)" fill="none" stroke-linecap="round" stroke-linejoin="round">${back}${palm}<g style="${sh}">${front}</g><g style="${sh}">${th}</g></g></g>`;
+  const R=h.rot*DEG,c=Math.cos(R),sn=Math.sin(R);
+  const V=p=>{const q=FX(p),x=q[0]-150,y=q[1]-338;return[h.cx+h.s*(c*x-sn*y),h.cy+h.s*(sn*x+c*y)]};
+  const lm=[BASE.wrist,tp[0],tp[1],tp[2],tp[3]];
+  FN.forEach(n=>ev.F[n].pts.forEach(p=>lm.push(p)));
+  h.skin=skin;h.lm=lm.map(V);h.V=V;
+  return h;
+}
+const CONN=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]];
+const NAMES={4:"thumb",8:"index",12:"middle",16:"ring",20:"pinky"};
+function overlay(h,pulse){
+  const col=h.role==='green'?'var(--ov-g)':'var(--ov-a)',L=h.lm;
+  let s=`<g class="ov" style="--c:${col}">`;
+  CONN.forEach(([a,b])=>s+=`<line x1="${f1(L[a][0])}" y1="${f1(L[a][1])}" x2="${f1(L[b][0])}" y2="${f1(L[b][1])}"/>`);
+  L.forEach((p,i)=>{if(!h.hl.includes(i))s+=`<circle class="d" cx="${f1(p[0])}" cy="${f1(p[1])}" r="3"/>`});
+  h.hl.forEach(i=>{const p=L[i];s+=`<circle class="k" cx="${f1(p[0])}" cy="${f1(p[1])}" r="7"/><text x="${f1(p[0]+11)}" y="${f1(p[1]-9)}">${i} ${NAMES[i]||""}</text>`});
+  if(h.t>.9&&h.tc){const a=L[4],b=L[h.tc];s+=`<circle class="p" cx="${f1((a[0]+b[0])/2)}" cy="${f1((a[1]+b[1])/2)}" r="${f1(13+4*Math.abs(Math.sin(pulse*30)))}"/>`}
+  return s+'</g>';
+}
+function tagSVG(h){
+  const w=h.lm[0],txt=h.role==='green'?'Pointer hand':'Other hand',tw=txt.length*6.6+18;
+  return `<g class="tag"><rect x="${f1(w[0]-tw/2)}" y="${f1(Math.min(w[1],412)-28)}" width="${tw}" height="19" rx="3"/><text x="${f1(w[0])}" y="${f1(Math.min(w[1],412)-15)}" text-anchor="middle">${txt}</text></g>`;
+}
+
+/* ---------- on-screen mock helpers (320x200) ---------- */
+const CUR=(x,y,c)=>`<path transform="translate(${f1(x)} ${f1(y)})" d="M0 0V15.5l4.2-3.6 2.9 6.8 2.5-1.1-2.9-6.7h5.6z" fill="${c||'#fff'}" stroke="#111" stroke-width="1.2" stroke-linejoin="round"/>`;
+const RIP=(x,y,k,c)=>(k<=0||k>=1)?'':`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(4+26*k)}" fill="none" stroke="${c}" stroke-width="2" opacity="${f1(1-k)}"/>`;
+const TX=(x,y,s,t,o)=>`<text x="${x}" y="${y}" font-size="${s}" ${o||''}>${t}</text>`;
+const WIN=(x,y,w,h,title,o)=>{o=o||{};let l='';
+  for(let i=0;i<3;i++)l+=`<rect x="${x+10}" y="${y+22+i*12}" width="${f1((w-20)*[.9,.8,.55][i])}" height="4" rx="2" fill="var(--scr-line)"/>`;
+  return `<g${o.op!=null?` opacity="${o.op}"`:''}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="var(--scr-win)" stroke="var(--scr-edge)"/><path d="M${x} ${y+12}V${y+5}a5 5 0 0 1 5-5h${w-10}a5 5 0 0 1 5 5v7z" fill="${o.bar||'var(--scr-bar)'}"/>${TX(x+8,y+9,7,title,'fill="var(--scr-ink)" font-weight="600"')}${l}</g>`};
+const TASK=`<rect y="188" width="320" height="12" fill="var(--scr-bar)"/>`+[0,1,2,3].map(i=>`<rect x="${10+i*18}" y="191" width="12" height="6" rx="2" fill="var(--scr-line)"/>`).join('');
+const DESK=(extra)=>`<rect width="320" height="200" fill="url(#scrBg)"/>`+(extra!==undefined?extra:WIN(22,22,150,96,'Notes')+WIN(150,64,148,100,'Photos'))+TASK;
+const CARD=(x,y,w,h,title,o)=>{o=o||{};return `<g${o.op!=null?` opacity="${o.op}"`:''}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="var(--scr-win)" stroke="${o.ring||'var(--scr-edge)'}" stroke-width="${o.ring?2.5:1}"/><rect x="${x}" y="${y}" width="${w}" height="9" rx="4" fill="var(--scr-bar)"/>${TX(x+5,y+7,6,title,'fill="var(--scr-ink)"')}<rect x="${x+6}" y="${y+16}" width="${w-12}" height="4" rx="2" fill="var(--scr-line)"/><rect x="${x+6}" y="${y+25}" width="${f1((w-12)*.65)}" height="4" rx="2" fill="var(--scr-line)"/></g>`};
+const state=t=>t>.9?'touching':t>.12?'closing':'apart';
+
+/* ---------- scenes: u in [0,1) -> {hands, extra, screen, readout} ---------- */
+const SC={};
+const idleGreen=(u,cx)=>hand('green',pointPose(),{cx:cx+4*Math.sin(TAU*u*2),cy:414+3*Math.sin(TAU*u*3),s:.9,hl:[8]});
+const pinchHand=(role,n,t,o)=>hand(role,pinchPose(n,t),Object.assign({hl:[4,TIPID[n]],tc:TIPID[n],t},o));
+
+SC.move=u=>{
+  const dx=75*Math.sin(TAU*u),dy=40*Math.sin(2*TAU*u);
+  const h=hand('green',pointPose(),{cx:335+dx,cy:412+dy,hl:[8]});
+  const pos=k=>{const q=u-k;return[160+97.5*Math.sin(TAU*q),100+52*Math.sin(2*TAU*q)]};
+  const tr=[.06,.045,.03,.015].map((k,i)=>{const p=pos(k);return`<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${2+i*.5}" fill="var(--g)" opacity="${.15+i*.12}"/>`}).join('');
+  const c=pos(0);
+  return{hands:[h],readout:'8: moving',
+    extra:`<rect x="165" y="92" width="280" height="175" rx="4" fill="none" stroke="#fff" stroke-opacity=".6" stroke-dasharray="6 5"/><text class="vf-t" x="173" y="110">Center box</text>`,
+    screen:DESK()+tr+CUR(c[0],c[1])};
+};
+SC.toggle=u=>{
+  const t=pinchT(u),off=u>.3,h=pinchHand('green','pinky',t,{cx:320});
+  const sc=DESK(WIN(22,22,150,96,'Notes',{op:off?.55:1})+WIN(150,64,148,100,'Photos',{op:off?.55:1}))+
+    `<rect x="60" y="68" width="200" height="62" rx="31" fill="${off?'var(--scr-off)':'var(--g)'}"/><circle cx="${off?91:229}" cy="99" r="23" fill="#fff"/>`+
+    TX(off?156:110,95,13,off?'Controls paused':'Controls on','fill="#fff" font-weight="700"')+TX(off?156:110,110,8,'Tracking keeps running','fill="#fff" opacity=".9"');
+  return{hands:[h],readout:'4 + 20: '+state(t),screen:sc};
+};
+SC.windows=u=>{
+  const t=pinchT(u),h=pinchHand('green','middle',t,{cx:320}),on=t>.6;
+  const sc=DESK()+`<rect x="8" y="${on?22:188}" width="150" height="${on?160:0}" rx="6" fill="var(--scr-win)" stroke="var(--scr-edge)"/>`+
+    (on?TX(22,52,14,'Start','fill="var(--scr-ink)" font-weight="700"')+TX(22,82,10,'Apps','fill="var(--scr-ink)"'):'');
+  return{hands:[h],readout:'4 + 12: '+state(t),screen:sc};
+};
+SC.left=u=>{
+  const t=pinchT(u),h=pinchHand('other','index',t,{cx:320}),press=t>.6,k=(u-.74)/.2;
+  const sc=DESK()+`<rect x="110" y="${press?83:82}" width="100" height="34" rx="6" fill="${press?'var(--g)':'var(--scr-win)'}" stroke="var(--g)" stroke-width="2"/>`+TX(160,104,12,'Save',`text-anchor="middle" font-weight="700" fill="${press?'#fff':'var(--scr-ink)'}"`)+
+    RIP(160,100,k,'var(--a)')+(k>0&&k<1.6?TX(160,134,10,'Clicked','text-anchor="middle" fill="var(--scr-ink)" font-weight="600"'):'')+CUR(156,96);
+  return{hands:[h],readout:'4 + 8: '+state(t),screen:sc};
+};
+SC.drag=u=>{
+  const t=pinchT(u),m=ss(.3,.68,u);
+  const o=pinchHand('other','index',t,{cx:205,cy:414,s:.9}),g=hand('green',pointPose(),{cx:440+70*m,cy:414,s:.9,hl:[8]});
+  const wx=30+110*m,grab=t>.6;
+  const sc=DESK('')+`<rect x="${wx+3}" y="${grab?40:36}" width="130" height="90" rx="5" fill="#000" opacity="${grab?.22:.1}"/>`+WIN(wx,grab?30:34,130,90,'Draft',{bar:grab?'var(--a-soft)':undefined})+CUR(wx+60,grab?33:37);
+  return{hands:[o,g],readout:'4 + 8: held',screen:sc};
+};
+SC.double=u=>{
+  const t=pinchT(u),h=pinchHand('other','middle',t,{cx:320});
+  const k1=(u-.3)/.15,k2=(u-.38)/.15,op=ss(.46,.58,u);
+  const sc=DESK('')+`<path d="M130 70h18l5 6h27v34h-50z" fill="var(--a)" opacity=".9"/>`+TX(160,124,9,'Docs','text-anchor="middle" fill="var(--scr-ink)"')+
+    RIP(160,92,k1,'var(--a)')+RIP(160,92,k2,'var(--a)')+(op>0?`<g opacity="${op}" transform="translate(160 100) scale(${f1(.7+.3*op)}) translate(-160 -100)">${WIN(60,26,200,130,'Docs')}</g>`:'')+CUR(156,88);
+  return{hands:[h],readout:'4 + 12: '+state(t),screen:sc};
+};
+SC.right=u=>{
+  const t=pinchT(u),o=pinchHand('other','pinky',t,{cx:205,cy:414,s:.9}),g=idleGreen(u,440),on=u>.3;
+  const items=['Open','Copy','Paste','Refresh'].map((s,i)=>TX(112,92+i*14,8,s,'fill="var(--scr-ink)"')+(i<3?`<path d="M106 ${96+i*14}h84" stroke="var(--scr-line)"/>`:'')).join('');
+  const sc=DESK()+(on?`<rect x="104" y="74" width="92" height="66" rx="5" fill="var(--scr-win)" stroke="var(--scr-edge)"/>${items}`:'')+CUR(100,68);
+  return{hands:[o,g],readout:'4 + 20: '+state(t),screen:sc};
+};
+SC.scroll=u=>{
+  const dy=-42*Math.sin(TAU*u),shift=28*(1-Math.cos(TAU*u)),vel=Math.sin(TAU*u);
+  const o=hand('other',vPose(),{cx:205,cy:414+dy,s:.9,hl:[8,12]}),g=idleGreen(u,440);
+  const ay=414-63*.9;
+  let lines='';for(let i=-2;i<12;i++){const y=26+i*16+shift;lines+=`<rect x="56" y="${f1(y)}" width="${[170,130,150,100][((i%4)+4)%4]}" height="5" rx="2.5" fill="var(--scr-line)"/>`}
+  const sc=DESK('')+`<clipPath id="scl"><rect x="40" y="14" width="240" height="166" rx="5"/></clipPath><rect x="40" y="14" width="240" height="166" rx="5" fill="var(--scr-win)" stroke="var(--scr-edge)"/><g clip-path="url(#scl)">${lines}</g><rect x="270" y="${f1(30+60*(1-shift/56))}" width="5" height="40" rx="2.5" fill="var(--scr-off)"/>`+
+    `<path d="M292 80l8-12 8 12z" fill="var(--a)" opacity="${vel>.15?1:.25}"/><path d="M292 108l8 12 8-12z" fill="var(--a)" opacity="${vel<-.15?1:.25}"/>`;
+  const extra=`<g stroke="var(--ov-a)" fill="none" stroke-width="2"><circle cx="205" cy="${f1(ay)}" r="8" fill="rgba(255,180,69,.25)"/><path d="M110 ${f1(ay)}h70M230 ${f1(ay)}h70" stroke-dasharray="5 5"/></g><text class="vf-t" x="110" y="${f1(ay-14)}">Scroll up</text><text class="vf-t" x="110" y="${f1(ay+24)}">Scroll down</text>`;
+  return{hands:[o,g],extra,readout:'8 + 12: '+(vel>.15?'up':vel<-.15?'down':'hold'),screen:sc};
+};
+SC.picker=u=>{
+  const t=pinchT(u),h=pinchHand('other','ring',t,{cx:320}),k=ss(.3,.4,u);
+  let ov='';if(k>0)ov=`<g opacity="${k}"><rect width="320" height="188" fill="#000" opacity=".4"/>${CARD(24,52,84,60,'Notes')}${CARD(118,52,84,60,'Photos')}${CARD(212,52,84,60,'Docs')}${TX(160,140,9,'Esc cancels','text-anchor="middle" fill="#fff"')}</g>`;
+  return{hands:[h],readout:'4 + 16: '+state(t),screen:DESK()+ov};
+};
+SC.select=u=>{
+  const m=ss(.04,.3,u),g=hand('green',pointPose(),{cx:440-85*(1-m),cy:414+44*(1-m),s:.9,hl:[8]});
+  const t=pinchT(u),o=pinchHand('other','index',t,{cx:205,cy:414,s:.9});
+  const cx=160-110*(1-m)*1,cy=82+58*(1-m),p=ss(.32,.48,u);
+  const r=(a,b)=>lerp(a,b,p);
+  const sc=DESK()+`<rect width="320" height="188" fill="#000" opacity=".4"/>${CARD(24,52,84,60,'Notes',{op:1-p})}${CARD(212,52,84,60,'Docs',{op:1-p})}`+
+    `<g>${CARD(r(118,14),r(52,12),r(84,292),r(60,166),'Photos',{ring:p<.1&&m>.9?'var(--g)':null})}</g>`+CUR(cx,cy);
+  return{hands:[g,o],readout:'8: pointing, 4 + 8: '+state(t),screen:sc};
+};
+SC.chrome=u=>{
+  const f=ss(.08,.38,u)-ss(.82,.95,u),rot=45*f;
+  const L=hand('other',chromePose(),{cx:lerp(160,134.6,f),cy:414,s:.95,rot,hl:[4,8]});
+  const R=hand('green',chromePose(),{cx:lerp(480,505.4,f),cy:414,s:.95,rot:-rot,hl:[4,8]});
+  const ax=(L.lm[8][0]+R.lm[8][0])/2,ay=(L.lm[8][1]+R.lm[8][1])/2,p=clamp((u-.4)/.2)*(f>.9?1:0),C=TAU*17;
+  const extra=`<g opacity="${f1(f)}"><path d="M${f1(ax)} ${f1(ay)}L${f1(L.lm[4][0])} ${f1(L.lm[4][1])}L${f1(R.lm[4][0])} ${f1(R.lm[4][1])}Z" fill="rgba(255,255,255,.1)" stroke="#fff" stroke-width="2" stroke-dasharray="7 6"/><circle cx="${f1(ax)}" cy="${f1(ay-26)}" r="17" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="4"/><circle cx="${f1(ax)}" cy="${f1(ay-26)}" r="17" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="${f1(C*p)} ${f1(C)}" transform="rotate(-90 ${f1(ax)} ${f1(ay-26)})"/></g>`;
+  const q=ss(.62,.76,u);
+  const win=q>0?`<g opacity="${q}" transform="translate(160 100) scale(${f1(.7+.3*q)}) translate(-160 -100)"><rect x="30" y="16" width="260" height="160" rx="6" fill="var(--scr-win)" stroke="var(--scr-edge)"/><path d="M30 38V22a6 6 0 0 1 6-6h248a6 6 0 0 1 6 6v16z" fill="var(--scr-bar)"/><rect x="38" y="22" width="64" height="16" rx="4" fill="var(--scr-win)"/>${TX(48,33,8,'Chrome','fill="var(--scr-ink)" font-weight="600"')}<rect x="42" y="44" width="236" height="12" rx="6" fill="var(--scr-bar)"/><rect x="90" y="86" width="140" height="18" rx="9" fill="var(--scr-bar)" stroke="var(--scr-edge)"/></g>`:'';
+  return{hands:[L,R],extra,readout:'index tips + thumbs: '+(p>=1?'held':f>.9?'hold…':'forming'),screen:DESK()+win};
+};
+
+/* ---------- content ---------- */
+const GESTURES=[
+{id:'move',role:'green',title:'Move pointer',short:'Index finger',thumb:.25,
+ summary:'Your pointer hand steers the cursor. The index fingertip, point 8, is the only part that matters.',
+ steps:['Curl the other three fingers and tuck the thumb in. Point your index finger at the camera.','Move it inside the dashed center box. The box maps to your whole primary display.'],
+ note:'Index-only pointing moves the cursor without firing green-hand shortcuts. Press H in the preview to switch the pointer hand.',scr:'Cursor follows the fingertip'},
+{id:'toggle',role:'green',title:'Controls on / off',short:'Thumb + pinky',thumb:.2,
+ summary:'Pause or resume every mouse action without closing the app.',
+ steps:['On the pointer hand, open the hand and bring the thumb tip to the pinky tip. Hold briefly.','Pull them apart before you toggle again.'],
+ note:'Tracking keeps running while controls are off, so the same pinch turns them back on.',scr:'Controls switch off, then on'},
+{id:'windows',role:'green',title:'Open Start',short:'Thumb + middle',thumb:.2,
+ summary:'Press the Windows key from the green pointer hand.',
+ steps:['On the green hand, bring your thumb tip to your middle fingertip.','Keep the other fingertips away from the thumb and separate to rearm the gesture.'],
+ note:'One pinch presses the Windows key once. The other hand uses the same pinch for double click.',scr:'Windows Start menu opens'},
+{id:'left',role:'other',title:'Left click',short:'Thumb + index',thumb:.2,
+ summary:'Press and release the left mouse button.',
+ steps:['On the other hand, bring the thumb tip to the index tip.','Pull the fingers apart. The click completes on release.'],
+ note:'With only one hand visible, that hand can also left click.',scr:'Click lands under the cursor'},
+{id:'drag',role:'other',title:'Drag',short:'Hold thumb + index',thumb:.55,
+ summary:'Hold the left button down while the pointer hand moves.',
+ steps:['Pinch thumb and index on the other hand and keep them together.','Move the pointer hand to carry the item. Open the pinch to drop it.'],
+ note:'Pausing the app also releases an active drag.',scr:'Window follows the pointer'},
+{id:'double',role:'other',title:'Double click',short:'Thumb + middle',thumb:.2,
+ summary:'Open files and folders that need a double click.',
+ steps:['On the other hand, bring the thumb tip to the middle fingertip.','Keep the index finger clear of the thumb so the gesture reads clearly.'],
+ note:'This needs both hands: green thumb + middle opens Start instead. One pinch sends one double click.',scr:'Two clicks open the item'},
+{id:'right',role:'other',title:'Right click',short:'Thumb + pinky',thumb:.2,
+ summary:'Open the context menu under the cursor.',
+ steps:['Keep both hands in view.','Bring the other hand’s thumb tip to its pinky tip.'],
+ note:'The pointer hand uses this same pinch to toggle controls, so right click always comes from the other hand.',scr:'Context menu opens'},
+{id:'scroll',role:'other',title:'Scroll up / down',short:'V sign, then move',thumb:.25,
+ summary:'Distance from a starting point sets the scroll speed.',
+ steps:['Raise index and middle fingers in a V on the other hand. A start point appears at your palm.','Hold your hand above the point to scroll up, or below it to scroll down. Farther is faster.','Return to the point to stop. Fold the V to reset it.'],
+ note:'Each scroll step sends 30 wheel units. Keep both hands visible.',scr:'Page scrolls with hand height'},
+{id:'picker',role:'other',title:'Open window picker',short:'Thumb + ring',thumb:.2,
+ summary:'Show thumbnails of your open windows.',
+ steps:['Bring the other hand’s thumb tip to the ring fingertip.','Release the pinch. The picker stays open.'],
+ note:'The picker opens once per pinch. Press Esc to cancel it.',scr:'Window thumbnails appear'},
+{id:'select',role:'other',title:'Choose a window',short:'Point + pinch',thumb:.6,
+ summary:'Pick a window from the open picker.',
+ steps:['Move the pointer hand over the thumbnail you want.','Pinch thumb and index on the other hand.'],
+ note:'Open the picker first with thumb + ring.',scr:'Chosen window opens full size'},
+{id:'chrome',role:'both',title:'Open Chrome',short:'Two-hand triangle',thumb:.6,
+ summary:'Launch a new Chrome window.',
+ steps:['Touch both index fingertips together at the top.','Spread both thumbs apart below to make a triangle. Hold about 0.7 seconds.'],
+ note:'Separate your hands before making the triangle again. Pointer and click actions pause while it is held.',scr:'Chrome window opens'}
+];
+const GROUPS={green:'Pointer hand',other:'Other hand',both:'Both hands'};
+const FNAME={move:'Index',toggle:'Thumb + pinky',windows:'Thumb + middle',left:'Thumb + index',drag:'Thumb + index',double:'Thumb + middle',right:'Thumb + pinky',scroll:'Index + middle',picker:'Thumb + ring',select:'Thumb + index',chrome:'Index + thumbs'};
+
+/* ---------- rendering ---------- */
+const $=id=>document.getElementById(id);
+const BG=`<rect width="640" height="420" fill="url(#camBg)"/><rect width="640" height="420" fill="url(#vig)"/>`;
+function frame(id,u,withOv,pulse){
+  const s=SC[id](u);
+  let out='',ov='';
+  s.hands.forEach(h=>{out+=h.skin;if(withOv)ov+=overlay(h,pulse||0)+tagSVG(h)});
+  return{s,svg:(s.extra||'')+out+ov};
+}
+function thumbSVG(g){
+  const f=frame(g.id,g.thumb,false);
+  return `<svg viewBox="0 0 640 420" aria-hidden="true">${BG}${f.svg.replace(/<text class="vf-t"[^>]*>.*?<\/text>/g,'')}</svg>`;
+}
+let sel='move',filter='all',playing=true,u=0,last=0,showOv=true;
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(reduce)playing=false;
+const PERIOD=7000;
+function draw(){
+  const g=GESTURES.find(x=>x.id===sel);if(!g)return;
+  const f=frame(sel,u,showOv,u);
+  $('vf-dyn').innerHTML=f.svg;
+  $('scr-dyn').innerHTML=f.s.screen;
+  $('scr-state').textContent=f.s.readout;
+  $('scrub').value=Math.round(u*1000);
+}
+function matching(){
+  const q=$('search').value.trim().toLowerCase();
+  return GESTURES.filter(g=>(filter==='all'||g.role===filter)&&(!q||[g.title,g.short,g.summary,g.note,FNAME[g.id],...g.steps].join(' ').toLowerCase().includes(q)));
+}
+function renderList(){
+  const items=matching();
+  if(!items.some(g=>g.id===sel)&&items[0])sel=items[0].id;
+  $('count').textContent=items.length+(items.length===1?' gesture':' gestures');
+  let html='';
+  if(!items.length){html='<div class="empty"><p>No gesture matches. Try a finger name like ring.</p><button type="button" class="tbtn" id="clear">Show all</button></div>'}
+  else ['green','other','both'].forEach(r=>{
+    const arr=items.filter(g=>g.role===r);if(!arr.length)return;
+    html+=`<div class="grp ${r}"><i></i>${GROUPS[r]}</div>`+arr.map(g=>`<button type="button" class="item r-${g.role}" data-id="${g.id}" aria-current="${g.id===sel}"><span>${thumbSVG(g)}</span><span><strong>${g.title}</strong><small>${g.short}</small></span></button>`).join('');
+  });
+  $('list').innerHTML=html;
+  renderDetail();
+}
+function renderDetail(){
+  const g=GESTURES.find(x=>x.id===sel);
+  if(!g){$('viewer').hidden=true;return}
+  $('viewer').hidden=false;
+  const cls={green:'g',other:'a',both:'b'}[g.role];
+  $('scr-note').textContent=g.scr;
+  $('vf').setAttribute('aria-label',g.title+' gesture preview');
+  const ids=matching().map(x=>x.id),ix=ids.indexOf(g.id);
+  $('dhead').innerHTML=`<div><div class="chips"><span class="chip ${cls}">${GROUPS[g.role]}</span><span class="chip b">Uses: ${FNAME[g.id]}</span></div><h2>${g.title}</h2><p class="summary">${g.summary}</p></div><div class="dnav"><span class="count">${ix+1} of ${ids.length}</span><button type="button" class="tbtn" data-nav="-1" aria-label="Previous gesture">Back</button><button type="button" class="tbtn" data-nav="1" aria-label="Next gesture">Next</button></div>`;
+  $('detail').innerHTML=`<h3 class="dh3">How to do it</h3><ol class="steps">${g.steps.map(s=>`<li><span>${s}</span></li>`).join('')}</ol><p class="note">${g.note}</p>`;
+  draw();
+}
+function select(id,hash){
+  sel=id;u=0;
+  $('list').querySelectorAll('.item').forEach(b=>b.setAttribute('aria-current',String(b.dataset.id===id)));
+  renderDetail();
+  if(hash!==false)try{history.replaceState(null,'','#'+id)}catch(_){}
+}
+function tick(t){
+  if(playing){u=(u+(t-last)/PERIOD)%1;draw()}
+  last=t;requestAnimationFrame(tick);
+}
+function syncPlay(){
+  $('play').innerHTML=playing?'<svg viewBox="0 0 14 14"><rect x="2" y="1" width="3.5" height="12"/><rect x="8.5" y="1" width="3.5" height="12"/></svg>':'<svg viewBox="0 0 14 14"><path d="M3 1l10 6-10 6z"/></svg>';
+  $('play').setAttribute('aria-label',playing?'Pause animation':'Play animation');
+}
+
+/* ---------- reference hand ---------- */
+function refHand(){
+  const h=hand('green',openPose(),{cx:150,cy:338,s:1});
+  let s=h.skin+`<g class="ov" style="--c:var(--g)">`;
+  CONN.forEach(([a,b])=>s+=`<line x1="${f1(h.lm[a][0])}" y1="${f1(h.lm[a][1])}" x2="${f1(h.lm[b][0])}" y2="${f1(h.lm[b][1])}" style="stroke:var(--g);opacity:.7"/>`);
+  h.lm.forEach((p,i)=>{
+    const key=[4,8,12,16,20].includes(i);
+    s+=`<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${key?10:7}" style="fill:${key?'var(--g)':'var(--panel)'};stroke:var(--g);stroke-width:1.6"/><text x="${f1(p[0])}" y="${f1(p[1]+(key?3.6:2.8))}" text-anchor="middle" style="font:700 ${key?10:7.5}px var(--font-mono);fill:${key?'var(--panel)':'var(--ink)'};stroke:none">${i}</text>`;
+  });
+  s+='</g>';
+  const names=[[4,'Thumb',-18,-14,'end'],[8,'Index',-6,-16,'middle'],[12,'Middle',0,-16,'middle'],[16,'Ring',4,-16,'middle'],[20,'Pinky',10,-16,'start']];
+  names.forEach(([i,n,dx,dy,a])=>{const p=h.lm[i];s+=`<text x="${f1(p[0]+dx)}" y="${f1(p[1]+dy)}" text-anchor="${a}" style="font:700 10px var(--font-mono);fill:var(--ink-2)">${n}</text>`});
+  $('refsvg').innerHTML=s;
+}
+
+/* ---------- events ---------- */
+$('list').addEventListener('click',e=>{
+  const b=e.target.closest('.item');if(b){select(b.dataset.id);if(innerWidth<=1000)$('viewer').scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'})}
+  if(e.target.id==='clear'){filter='all';$('search').value='';syncFilters();renderList()}
+});
+function syncFilters(){document.querySelectorAll('.filters button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===filter)))}
+document.querySelectorAll('.filters button').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;syncFilters();renderList()}));
+$('search').addEventListener('input',renderList);
+$('play').addEventListener('click',()=>{playing=!playing;syncPlay()});
+$('scrub').addEventListener('input',e=>{playing=false;syncPlay();u=e.target.value/1000;draw()});
+$('ov').addEventListener('change',e=>{showOv=e.target.checked;draw();renderListSoon()});
+let rl;function renderListSoon(){}
+document.querySelectorAll('.skins button').forEach(b=>b.addEventListener('click',()=>{
+  document.documentElement.dataset.skin=b.dataset.skin;
+  document.querySelectorAll('.skins button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  try{localStorage.setItem('hm-skin',b.dataset.skin)}catch(_){}
+}));
+function themeLabel(){const d=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;$('theme-btn').textContent=d?'Light mode':'Dark mode'}
+$('theme-btn').addEventListener('click',()=>{
+  const d=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  const n=d?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('hm-theme',n)}catch(_){};themeLabel();
+});
+
+$('dhead').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(!b)return;const ids=matching().map(x=>x.id),n=ids[(ids.indexOf(sel)+Number(b.dataset.nav)+ids.length)%ids.length];if(n)select(n)});
+addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName)||e.altKey||e.ctrlKey||e.metaKey)return;const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){const ids=matching().map(x=>x.id);if(ids.length)select(ids[(ids.indexOf(sel)+d+ids.length)%ids.length])}});
+/* ---------- boot ---------- */
+try{const t=localStorage.getItem('hm-theme');if(t)document.documentElement.dataset.theme=t;
+  const k=localStorage.getItem('hm-skin');if(k){document.documentElement.dataset.skin=k;document.querySelectorAll('.skins button').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.skin===k)))}}catch(_){}
+themeLabel();
+const h0=location.hash.slice(1);if(GESTURES.some(g=>g.id===h0))sel=h0;
+$('print-guide').innerHTML='<h2>All gestures</h2>'+GESTURES.map(g=>`<section class="pg"><h3>${g.title} (${GROUPS[g.role]}, ${FNAME[g.id]})</h3><p>${g.summary}</p><ol>${g.steps.map(s=>`<li>${s}</li>`).join('')}</ol><p>${g.note}</p></section>`).join('');
+refHand();syncPlay();renderList();requestAnimationFrame(t=>{last=t;tick(t)});
+
+</script>
+</body>
+</html>
